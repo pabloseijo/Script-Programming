@@ -87,15 +87,7 @@ case $opcion in
     ;;
   "GET/POST")
 
-    echo "Has seleccionado la opción 2."
-    ;;
-  "-s")
-    echo "Has seleccionado la opción 3."
-    ;;
-  "-t")
-    echo "Has seleccionado la opción 3."
-=======
-
+    
     ### -------------------------- Opción GET/POST ------------------------------ ###
 
     echo "Has seleccionado la opción GET/POST."
@@ -144,6 +136,7 @@ case $opcion in
     # date "+%b %d %T" muestra la fecha y hora actual en el formato especificado
     # $contador muestra el valor de la variable contador
     echo "$(date "+%b %d %T"). Registrados $contador accesos tipo GET/POST con respuesta 200."
+
 
     ;;
   "-s")
