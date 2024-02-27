@@ -36,14 +36,12 @@ To display unique HTTP response codes from the log file:
 
 ```
 ./access.sh -c /path/to/apache/logfile/access.log
-
 ```
 
 To find out how many days had no server access recorded:
 
 ```
 ./access.sh -t /path/to/apache/logfile/access.log
-
 ```
 
 To count the number of GET requests with a 200 OK response:
@@ -51,7 +49,6 @@ To count the number of GET requests with a 200 OK response:
 
 ```
 ./access.sh GET /path/to/apache/logfile/access.log
-
 ```
 
 For a summary of the total data sent in KiB:
