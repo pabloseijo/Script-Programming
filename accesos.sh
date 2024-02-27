@@ -40,6 +40,8 @@ fi
 
 opcion="$1"
 
+# Estructura de control que permite seleccionar la opción deseada, lo que sería el equivalente a un switch en otros lenguajes de programación.
+
 case $opcion in
   "-c")
 
@@ -92,7 +94,7 @@ case $opcion in
 
     echo "Has seleccionado la opción GET/POST."
 
-    >resultados.txt # Crea un archivo vacío llamado resultados.txt
+    >resultados.txt # Crea un archivo vacío llamado resultados.txt, o si ya existe, lo vacía.
 
     # Divide el archivo en doce partes, con un prefijo para los nombres de archivo, para poder procesarlos en paralelo. $2 es el archivo que se le pasa al script. archivo_parte_ es el 
     # prefijo que se le da a los archivos que se generan.
@@ -106,7 +108,7 @@ case $opcion in
     # Para esto se utiliza el comando xargs, que nos permite la ejecución de comandos en paralelo. A traves de la opción -P 12, se le 
     # indica que ejecute 12 comandos en paralelo, que es el numero de archivos que se generaron con el comando split. por otra parte {} bash 
     # GET/POST, indica que se ejecute el comando bash GET/POST, con el argumento {} que es el archivo que se le pasa a xargs.
-    ls archivo_parte_* | xargs -S 10000 -P 12 -I {} bash -c 'while IFS= read -r linea; do
+    ls archivo_parte_* | xargs -s 10000 -P 12 -I {} bash -c 'while IFS= read -r linea; do
         
         getPost=$(echo "$linea" | awk "{sub(/^\"/, \"\", \$6); print \$6}")
         respuesta=$(echo "$linea" | awk "{print \$9}")
@@ -140,10 +142,114 @@ case $opcion in
 
     ;;
   "-s")
+
+    ### -------------------------- Opción -s ------------------------------ ###
     echo "Has seleccionado la opción -s."
+
+    # Inicializamos los contadores, uno para los bytes y otro para las lineas
+    contadorBytes=0;
+    contadorLineas=0;
+
+    # Divide el archivo en doce partes, con un prefijo para los nombres de archivo, para poder procesarlos en paralelo. $2 es el archivo que se le pasa al script. archivo_parte_ es el 
+    # prefijo que se le da a los archivos que se generan.
+    split -n 12 "$2" archivo_parte_
+
+    # Crear un archivo temporal para almacenar los resultados intermedios
+    temp_file=$(mktemp)
+
+    ### ----------- Procesamiento de cada archivo en paralelo -------------- ###
+    
+    # Para esto se utiliza el comando xargs, que nos permite la ejecución de comandos en paralelo. A traves de la opción -P 12, se le dice que ejecute 12 comandos en paralelo, que es el numero de archivos que se generaron con el comando split.
+    # A diferencia de los anteriores podemos ver que dentro de cada comando se ejecuta un bucle que recorre cada linea del archivo que se le paga con xargs, cogiendo las varbiables y sumando los bytes.
+    # Una notable consideraciión es que se utiliza la comprobación =~ ^[0-9]+$. Esto significa que se comprueba si el valor de bytes es un número entero positivo, pues =~ es un operador de coincidencia de expresiones regulares, despues ^[0-9]+$ es una expresión regular que comprueba si el valor de bytes es un número entero positivo.
+    # Una expresión regular es una secuencia de caracteres que forma un patrón de búsqueda. Cuando se busca datos en un texto, puede utilizar este patrón para describir lo que está buscando. Estas pueden transformarse en automatas finitos deterministas, que son una forma de representar un lenguaje regular.
+    ls archivo_parte_* | xargs -P 12 -I {} bash -c '{
+        localBytes=0
+        localLines=0 # Inicializa el contador de líneas
+        while IFS=" " read -r ip client user datetime1 datetime2 method url protocol status bytes
+        do
+            # Asegura que solo se sumen valores numéricos para los bytes
+            if [[ "$bytes" =~ ^[0-9]+$ ]]; then
+                ((localBytes+=bytes))
+            fi
+            ((localLines++)) # Incrementa el contador de líneas por cada línea procesada
+        done < "{}"
+        echo "$localBytes $localLines" # Imprime tanto los bytes como las líneas contadas
+    }' >> "$temp_file"
+
+
+    # Limpieza: elimina los archivos temporales de las partes
+    rm archivo_parte_*
+
+    # Leer el archivo temporal para sumar los bytes totales
+    while IFS= read -r linea; do
+
+        # Extraemos del temp file los bytes
+        bytes=$(echo "$linea" | awk "{print \$1}")
+        lineas=$(echo "$linea" | awk "{print \$2}")
+
+        #Sumamos los bytes y contamos las lineas
+        ((contadorBytes+=bytes))
+        let contadorLineas+=$lineas;
+
+    done < "$temp_file"
+
+    # Eliminar el archivo temporal
+    rm "$temp_file"
+
+    # Convertir el total de bytes a KiB
+    contadorBytesKiB=$((contadorBytes/1024))
+
+    # Mostramos los resultados
+    echo "$contadorBytes KiB enviados en $contadorLineas peticiones."
+
+
+
     ;;
   "-t")
+
+    ### -------------------------- Opción -t ------------------------------ ###
+
+    # TODO: Implementar la opción -t
+
     echo "Has seleccionado la opción -t."
+
+    >resultados.txt # Crea un archivo vacío llamado resultados.txt, o si ya existe, lo vacía.
+
+    # Divide el archivo en doce partes, con un prefijo para los nombres de archivo, para poder procesarlos en paralelo. $2 es el archivo que se le pasa al script. archivo_parte_ es el 
+    # prefijo que se le da a los archivos que se generan.
+    split -n 12 "$2" archivo_parte_
+
+    # Crear un archivo temporal para almacenar los resultados intermedios
+    temp_file=$(mktemp)
+
+    ### ----------- Procesamiento de cada archivo en paralelo -------------- ###
+    
+
+    ls archivo_parte_* | xargs -P 12 -I {} bash -c '{
+        while IFS=" " read -r ip client user datetime1 datetime2 method url protocol status bytes
+        do
+            # Asumiendo que queremos procesar `datetime1` que contiene la fecha y hora
+            fecha_original=$datetime1
+            # Eliminar el corchete y reemplazar el primer ':' por un espacio para separar la fecha de la hora
+            fecha_ajustada=$(echo "$fecha_original" | sed -e "s/\[/ /" -e "s/:/ /")
+
+            # Usar `date` con el formato ajustado
+            fecha_formateada=$(date -d "$fecha_ajustada" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
+            echo "$fecha_formateada" # Imprime la fecha formateada
+        done < "{}"
+    }' >> "$temp_file"
+
+    sort -u "$temp_file" > resultados.txt
+
+
+    # Limpieza: elimina los archivos temporales de las partes
+    rm archivo_parte_*
+
+    # Limpieza: elimina el archivo temporal de resultados
+    rm "$temp_file"
+
+    echo "Operación -t realizada con éxito."
 
     ;;  
   *)
