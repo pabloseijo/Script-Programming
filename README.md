@@ -23,9 +23,9 @@ The script supports the following flags and functionalities:
 
 To use this script, follow the syntax given below:
 
-'''
+```
 ./access.sh [-c | GET/POST | -s] /path/to/apache/logfile/access.log
-'''
+```
 
 Please note that the script requires exactly two arguments to function correctly. If this condition is not met, it will terminate with an error message and a usage example. Additionally, ensure that the log file specified as the second argument is a regular file with read permissions. Failure to meet these requirements will also result in an error message and a usage example.
 
@@ -33,27 +33,32 @@ Please note that the script requires exactly two arguments to function correctly
 
 To display unique HTTP response codes from the log file:
 
-'''
+
+```
 ./access.sh -c /path/to/apache/logfile/access.log
-'''
+
+```
 
 To find out how many days had no server access recorded:
 
-'''
+```
 ./access.sh -t /path/to/apache/logfile/access.log
-'''
+
+```
 
 To count the number of GET requests with a 200 OK response:
 
-'''
+
+```
 ./access.sh GET /path/to/apache/logfile/access.log
-'''
+
+```
 
 For a summary of the total data sent in KiB:
 
-'''
+```
 ./access.sh -s /path/to/apache/logfile/access.log
-'''
+```
 
 # Note
 
