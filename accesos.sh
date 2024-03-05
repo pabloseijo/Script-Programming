@@ -112,41 +112,54 @@ case $opcion in
     primerAcceso=$(awk 'NR==1 {print $4}' log/access.log | sed 's/\[//' | cut -d: -f1)
     ultimoAcceso=$(awk 'END {print $4}' log/access.log | sed 's/\[//' | cut -d: -f1)
 
-    # Definir los días de cada mes (asumiendo que todos los años son no bisiestos)
-    dias_por_mes=(0 31 28 31 30 31 30 31 31 30 31 30 31)
+    echo "Primer acceso: $primerAcceso"
+    echo "Último acceso: $ultimoAcceso"
 
-    # Calcular la cantidad de días transcurridos desde el 1 de enero de 1
-    dias_desde_inicio_ano() {
-        local dia=$1
-        local mes=$2
-        local ano=$3
-        local dias=$((ano * 365 + dia))
-        for ((m = 1; m < mes; m++)); do
-            dias=$((dias + dias_por_mes[m]))
-        done
-        echo $dias
+    # Convertir una abreviatura de mes en inglés a su número correspondiente
+    convertirMesANumero() {
+        case $1 in
+            Jan) mes="01" ;;
+            Feb) mes="02" ;;
+            Mar) mes="03" ;;
+            Apr) mes="04" ;;
+            May) mes="05" ;;
+            Jun) mes="06" ;;
+            Jul) mes="07" ;;
+            Aug) mes="08" ;;
+            Sep) mes="09" ;;
+            Oct) mes="10" ;;
+            Nov) mes="11" ;;
+            Dec) mes="12" ;;
+            *) echo "Mes desconocido: $1" >&2; exit 1 ;;
+        esac
+        echo "$mes"
     }
 
-    # Calcular la cantidad de días transcurridos desde el 1 de enero de 1 hasta la fecha
-    dias_fecha1=$(dias_desde_inicio_ano ${fecha1[@]})
-    dias_fecha2=$(dias_desde_inicio_ano ${fecha2[@]})
+    # Función para reformatear fecha de "DD/Mmm/YYYY" a "YYYY-MM-DD"
+    reformatearFecha() {
+        dia=$(echo $1 | cut -d'/' -f1)
+        mesTexto=$(echo $1 | cut -d'/' -f2)
+        ano=$(echo $1 | cut -d'/' -f3)
+        mes=$(convertirMesANumero $mesTexto)
+        echo "${ano}-${mes}-${dia}"
+    }
 
-    echo "Días desde el 1 de enero de 1 hasta la fecha 1: $dias_fecha1"
+    primerAccesoReformateado=$(reformatearFecha $primerAcceso)
+    ultimoAccesoReformateado=$(reformatearFecha $ultimoAcceso)
 
-    # Calcular la diferencia en días entre las dos fechas
-    diferencia_dias=$((dias_fecha2 - dias_fecha1))
+    # Convertir las fechas de acceso a segundos desde la época (Epoch)
+    primerAccesoDate=$(date -d "$primerAccesoReformateado" +%s)
+    ultimoAccesoDate=$(date -d "$ultimoAccesoReformateado" +%s)
 
-    echo "Días totales: $diasTotales"
+    # Calcular la diferencia en segundos y luego convertir a días
+    dias=$(( (ultimoAccesoDate - primerAccesoDate) / 86400 + 1 ))
 
-    # Contar los días únicos con accesos
     diasConAcceso=$(awk '{print $4}' log/access.log | sed 's/\[//' | cut -d: -f1 | sort -u | wc -l)
 
     # Calcular los días sin acceso
-    diasSinAcceso=$((diasTotales - diasConAcceso))
-
+    diasSinAcceso=$((dias - diasConAcceso))
 
     echo "Días sin acceso: $diasSinAcceso"
-
     ;;  
   *)
     # Si no se reconoce la opción, se muestra un mensaje de error, con la opcion -e habilita la interpretación de las secuencias de escape por 
