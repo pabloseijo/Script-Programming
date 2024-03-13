@@ -65,9 +65,9 @@ case $opcion in
     echo "Has seleccionado la opción GET/POST."
 
     # Miramos el codigo de la opcion para seleccionar GET o POST
-    if ["$opcion" == "GET"]; then
+    if [ "$opcion" == "GET" ]; then
         # Si la opcion es GET, utilizamos awk para seleccionar las lineas que contienen GET y 200, y las contamos.
-        contador=$(awk '$6 == "\"GET\"" && $(NF-1) == 200' log/access.log | wc -l)
+        contador=$(awk '$6 == "\"GET" && $(NF-1) == 200' log/access.log | wc -l)
     else
         # Si la opcion es POST, utilizamos awk para seleccionar las lineas que contienen POST y 200, y las contamos.
         contador=$(awk '$6 == "\"POST" && $(NF-1) == 200' log/access.log | wc -l)
@@ -148,8 +148,8 @@ case $opcion in
     ultimoAccesoReformateado=$(reformatearFecha $ultimoAcceso)
 
     # Convertir las fechas de acceso a segundos desde la época (Epoch)
-    primerAccesoDate=$(gdate -d "$primerAccesoReformateado" +%s)
-    ultimoAccesoDate=$(gdate -d "$ultimoAccesoReformateado" +%s)
+    primerAccesoDate=$(date -d "$primerAccesoReformateado" +%s)
+    ultimoAccesoDate=$(date -d "$ultimoAccesoReformateado" +%s)
 
     # Calcular la diferencia en segundos y luego convertir a días
     dias=$(( (ultimoAccesoDate - primerAccesoDate) / 86400 + 1 ))
