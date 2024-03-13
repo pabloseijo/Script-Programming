@@ -1,0 +1,14 @@
+ID Simulación | Tiempo de Vuelo [fs] | Corriente [A]
+resultados_00 | 1.355000e+03 | -3.286013e-05
+resultados_01 | 1.355000e+03 | -3.474876e-05
+resultados_03 | 1.355000e+03 | -2.968122e-05
+resultados_04 | 1.355000e+03 | -3.169337e-05
+resultados_05 | 1.355000e+03 | -3.107336e-05
+resultados_06 | 1.355000e+03 | -3.292183e-05
+resultados_07 | 1.355000e+03 | -2.853436e-05
+resultados_08 | 1.355000e+03 | -2.969694e-05
+resultados_09 | 1.355000e+03 | -2.810635e-05
+resultados_10 | 1.355000e+03 | -3.061922e-05
+resultados_11 | 1.355000e+03 | -2.903966e-05
+resultados_12 | 1.355000e+03 | -2.832184e-05
+resultados_13 | 1.355000e+03 | -2.823536e-05

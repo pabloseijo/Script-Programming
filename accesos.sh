@@ -148,8 +148,8 @@ case $opcion in
     ultimoAccesoReformateado=$(reformatearFecha $ultimoAcceso)
 
     # Convertir las fechas de acceso a segundos desde la época (Epoch)
-    primerAccesoDate=$(date -d "$primerAccesoReformateado" +%s)
-    ultimoAccesoDate=$(date -d "$ultimoAccesoReformateado" +%s)
+    primerAccesoDate=$(gdate -d "$primerAccesoReformateado" +%s)
+    ultimoAccesoDate=$(gdate -d "$ultimoAccesoReformateado" +%s)
 
     # Calcular la diferencia en segundos y luego convertir a días
     dias=$(( (ultimoAccesoDate - primerAccesoDate) / 86400 + 1 ))
