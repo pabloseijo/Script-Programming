@@ -30,14 +30,5 @@ for file in ${SIMULATION_PATH}/*; do
     # Añadimos la línea al archivo de datos filtrados
     echo "${id} | 1.355000e+03 | ${corriente}" >> datos_filtrados.txt
 
-    # Acumulamos la corriente y aumentamos el contador
-    sumaCorrientes=$(echo "$sumaCorrientes + $corriente" | bc)
-
     ((contador++))
 done
-
-# Calculamos la corriente media 
-corrienteMedia=$(echo "scale=9; $sumaCorrientes / $contador" | bc -l)
-
-# Imprimimos por pantalla la corriente media
-echo "> El valor medio de la corriente, una vez evaluadas $contador simulaciones es: ${corrienteMedia} A"

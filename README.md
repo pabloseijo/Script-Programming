@@ -1,65 +1,73 @@
-# Apache Log File Processor
+# 🛠️ Shell Scripts for System Operations
 
-This Bash script is crafted to analyze Apache web server log files, executing various operations based on the supplied input parameters. It provides the capability to display unique HTTP response codes, enumerate days without any server access, tally GET/POST requests that resulted in a 200 response, and compile a summary of the total data transmitted in KiB.
+This repository contains a collection of Bash shell scripts designed for various system operation tasks, including data processing 📊, file organization 📁, and system analysis 🧐. Below is an overview of each script and its functionality.
 
-## Prerequisites
+## 📑 Scripts Overview
 
-Before you can run this script, ensure you have the following:
+### 1. `optativo.sh` - Simulation Data Processor 📈
 
-- Bash shell, tested on GNU Bash version 4.4.20 or newer.
-- Access to a Unix-like operating system, such as Linux or macOS.
-- A log file from an Apache web server, adhering to the following format: `IP Address - - [Date Time Zone] "GET/POST URL" Response Bytes Sent`.
+This script processes simulation results from Monte Carlo simulations of field-effect transistors (FETs) 🖥️ and extracts specific data points for analysis. It reads simulation output files, extracts the drain current at a specific flight time, and calculates the average current across simulations.
 
-## Features
+**Features:**
+- Extracts current data for a predefined flight time from simulation files 🔍.
+- Calculates the average current and outputs the result 📉.
+- Generates a filtered data file with simulation IDs, flight times, and corresponding currents 📝.
 
-The script supports the following flags and functionalities:
+### 2. `conferencia.sh` - Conference Video Organizer 📹
 
-- `-c`: Lists all unique HTTP response codes found in the log file, without duplicates.
-- `-t`: Calculates the number of days with no access to the server, from the first to the last logged access.
-- `GET/POST`: Counts the total number of GET or POST requests with a 200 OK response, displaying the tally.
-- `-s`: Provides a summary of the total data transferred, in kilobytes (KiB), based on the log file.
+Designed to organize conference video files into structured directories based on the video metadata (room number, date, and resolution) extracted from file names. It also renames the video files according to a specified format.
 
-## Usage
+**Features:**
+- Automatically creates directory structures based on video metadata 🗂️.
+- Renames and organizes video files into their respective directories 🔄.
 
-To use this script, follow the syntax given below:
+### 3. `archivo_passwd_processor.sh` - System Users Comparison Script 👥
 
-```
-./access.sh [-c | GET/POST | -s] /path/to/apache/logfile/access.log
-```
+This script processes a copy of the `passwd` file, sorts it, removes duplicates, and compares it to the system's current `/etc/passwd` file to check for differences.
 
-Please note that the script requires exactly two arguments to function correctly. If this condition is not met, it will terminate with an error message and a usage example. Additionally, ensure that the log file specified as the second argument is a regular file with read permissions. Failure to meet these requirements will also result in an error message and a usage example.
+**Features:**
+- Sorts and deduplicates a copy of the `passwd` file 🗃️.
+- Compares the processed file with the system's `/etc/passwd` 🔍.
+- Outputs the result of the comparison 📊.
 
-## Examples
+### 4. `accesos.sh` - Web Server Log Analyzer 🌐
 
-To display unique HTTP response codes from the log file:
+Analyzes web server access logs to extract and report various metrics, such as request counts by type (GET/POST), response codes distribution, and site access statistics.
 
+**Features:**
+- Filters access logs based on request types and response codes 🔎.
+- Calculates and reports website access statistics 📈.
+- Supports multiple analysis options through command-line arguments 🛠️.
 
-```
-./access.sh -c /path/to/apache/logfile/access.log
-```
+## 🚀 Getting Started
 
-To find out how many days had no server access recorded:
-
-```
-./access.sh -t /path/to/apache/logfile/access.log
-```
-
-To count the number of GET requests with a 200 OK response:
-
+To use these scripts, clone this repository to your local machine or server where you want to perform the operations. Ensure you have the necessary permissions to execute the scripts and access the files or directories involved.
 
 ```
-./access.sh GET /path/to/apache/logfile/access.log
+git clone https://github.com/yourusername/your-repository-name.git
+cd your-repository-name
 ```
 
-For a summary of the total data sent in KiB:
-
+Make sure to mark the scripts as executable:
 ```
-./access.sh -s /path/to/apache/logfile/access.log
+chmod +x *.sh
 ```
 
-# Note
+## 📖 Usage
 
-The access.log file provided on the Virtual Campus serves as an example log file. This script is designed to be compatible with any Apache log file that conforms to the aforementioned format.
+Here is a quick example of how to run each script. Replace [options] with any specific arguments required by the script.
+```
+./optativo.sh [simulation_directory]
+./conferencia.sh [source_directory] [destination_directory]
+./archivo_passwd_processor.sh
+./accesos.sh [option] [log_directory]
+```
 
-Replace `/path/to/apache/logfile/access.log` with the actual path to your log file when employing the script. This document is ready to be included in your GitHub repository, offering clear instructions and insights into the functionality of your Apache log file processor script.
+## 💡 Contributing
 
+Contributions to improve or extend the functionality of these scripts are welcome. Please feel free to fork the repository, make your changes, and submit a pull request 🤝.
+
+## ✍️ Authors
+
+- Javier Pereira
+- Pablo Seijo
