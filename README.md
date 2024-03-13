@@ -21,7 +21,7 @@ Designed to organize conference video files into structured directories based on
 - Automatically creates directory structures based on video metadata 🗂️.
 - Renames and organizes video files into their respective directories 🔄.
 
-### 3. `archivo_passwd_processor.sh` - System Users Comparison Script 👥
+### 3. `scriptFiltro.sh` - System Users Comparison Script 👥
 
 This script processes a copy of the `passwd` file, sorts it, removes duplicates, and compares it to the system's current `/etc/passwd` file to check for differences.
 
